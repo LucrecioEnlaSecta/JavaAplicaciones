@@ -1,0 +1,175 @@
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.geom.Rectangle2D;
+import java.util.Date;
+
+import javax.swing.*;
+
+public class JFrameDialog extends JFrame{
+ public JFrameDialog() {
+	 setTitle("Prueba de dialogos");
+	 setBounds(500,200,600,450);
+	 setVisible(true);
+	 setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	
+	 JPanel laminacuadricula=new JPanel();
+	 laminacuadricula.setLayout(new GridLayout(2,3));
+	 add(laminacuadricula);
+	 
+	//Construimos las laminas tipo caja con botones, las agregamos a la lamina principal
+	 lamina_tipo=new JPanelButtons("Tipo",new String[]{
+			 "Mensaje",
+			 "Confirmar",
+			 "Opcion",
+			 "Entrada"});
+	 
+	 
+	 lamina_tipo_mensaje=new JPanelButtons("tipo mensaje",new String[] {
+		"ERROR_MESSAGE",
+		"INFORMATION_MESSAGE",
+		"WARNING_MESSAGE",
+		"QUESTION_MESSAGE",
+		"PLAIN_MESSAGE"	 
+	 });
+	 laminacuadricula.add(lamina_tipo_mensaje);
+	 
+	 lamina_mensaje = new JPanelButtons("Mensaje",new String[] {
+		"Cadena",
+		"Icono",
+		"Componente",
+		"Otros",
+		"Object[]"
+	 });
+	 
+	 lamina_tipo_opcion=new JPanelButtons("Confirmar",new String[] {
+		"DEFAULT_OPTION",
+		"YES_NO_OPTION",
+		"YES_NO_CANCEL_OPTION",
+		"YES_CANCEL_OPTION"
+	 });
+	 
+	 lamina_opciones=new JPanelButtons("Opcion",new String[] {
+			 "String[]",
+			 "Icon[]",
+			 "Object[]"
+	 });
+
+	 lamina_entrada=new JPanelButtons("Entrada",new String[] {
+		 "Campo de texto",
+		 "Combo"
+});
+	 
+	 laminacuadricula.add(lamina_tipo);
+	 laminacuadricula.add(lamina_tipo_mensaje);
+	 laminacuadricula.add(lamina_mensaje);
+	 laminacuadricula.add(lamina_tipo_opcion);
+	 laminacuadricula.add(lamina_opciones);
+	 laminacuadricula.add(lamina_entrada);
+	 //Construimos la lamina inferior
+	 JPanel lamina_mostrar=new JPanel();
+	 JButton boton_mostrar=new JButton("Mostrar");
+	 lamina_mostrar.add(boton_mostrar);
+	 boton_mostrar.addActionListener(new AccionMostrar());
+	 add(lamina_mostrar,BorderLayout.SOUTH);
+	 add(laminacuadricula,BorderLayout.CENTER);
+	 
+ }
+ //public 
+ public Object[] dameArray(JPanelButtons lamina) {
+	 String s=lamina.dameSeleccion();
+	 if(s.equals("String[]")) {
+		 return new String[]{"Amarillo","Rojo","Azul"};
+	 }else if(s.equals("Icon[]")) {
+		 return new Object[] {new ImageIcon("race-car.gif"),new ImageIcon("tenor.gif"),new ImageIcon("imagg.png")};
+	 }else if(s.equals("Object[]")) {
+		 return new Object[] {
+				cadena,
+				micono,
+				micomponente,
+				objetomensaje
+		 };
+	 }else{
+		 return null;
+	 }
+ }
+ //-------------------------------------------------dd
+ public Object dameMensaje() {
+	 String s=lamina_mensaje.dameSeleccion();
+	 if(s.equals("Cadena")) {
+		 return cadena;
+	 }else if(s.equals("Icono")) {
+		 return micono;
+	 }else if(s.equals("Componente")) {
+		 return micomponente;
+	 }else if(s.equals("Otros")) {
+		 return objetomensaje;
+	 }else if(s.equals("Object[]")) {
+		 return new Object[] {
+		cadena,
+		micono,
+		micomponente,
+		objetomensaje
+		 };
+	 }else {
+		 return null;
+	 }
+
+ }
+ public int dameIcono(JPanelButtons lamina) {
+	 String s=lamina.dameSeleccion();
+	 if(s.equals("ERROR_MESSAGE")|| s.equals("YES_NO_OPTION")) {
+		 return 0;
+	 }else if(s.equals("INFORMATION_MESSAGE")||s.equals("YES_NO_CANCEL_OPTION")) {
+		 return 1;
+	 }else if(s.equals("QUESTION_MESSAGE")) {
+		 return 3;
+	 }else if(s.equals("PLAIN_MESSAGE")|| s.equals("DEFAULT_OPTION")) {
+		 return -1;
+	 }else if(s.equals("WARNING_MESSAGE")||s.equals("YES_CANCEL_OPTION")) {
+		 return 2;
+	 } else {
+		 return 0;
+	 }
+ }
+private class AccionMostrar implements ActionListener{
+	public void actionPerformed(ActionEvent e) {
+		System.out.println(lamina_tipo.dameSeleccion());
+		if(lamina_tipo.dameSeleccion().equals("Mensaje")) {
+			JOptionPane.showMessageDialog(JFrameDialog.this,dameMensaje(),"Titulo",dameIcono(lamina_tipo_mensaje));
+		}
+		else if(lamina_tipo.dameSeleccion().equals("Confirmar")) {
+			JOptionPane.showConfirmDialog(JFrameDialog.this,dameMensaje(),"Titulo",dameIcono(lamina_tipo_opcion),dameIcono(lamina_tipo_mensaje));
+		}
+		else if(lamina_tipo.dameSeleccion().equals("Opcion")) {
+			
+			JOptionPane.showOptionDialog(JFrameDialog.this,dameMensaje(),"Titulo",dameIcono(lamina_tipo_opcion),dameIcono(lamina_tipo_mensaje),null,dameArray(lamina_opciones),null);
+		}
+		else if(lamina_tipo.dameSeleccion().equals("Entrada")) {
+			if(lamina_entrada.dameSeleccion().equals("Campo de texto")) {
+			JOptionPane.showInputDialog(JFrameDialog.this,dameMensaje(),"Titulo",dameIcono(lamina_tipo_mensaje));
+			}else {
+				JOptionPane.showInputDialog(JFrameDialog.this,dameMensaje(),"Titulo",dameIcono(lamina_tipo_mensaje),null,new String[] {"Amarillo","Azul","Rojo"},"Azul");
+			}
+		}
+	}
+}
+
+ private JPanelButtons lamina_tipo_opcion,lamina_opciones,lamina_entrada,lamina_mensaje,lamina_tipo, lamina_tipo_mensaje;
+
+private Icon micono=new ImageIcon("Luki.jpg");
+private Component micomponente=new lamina_ejemplo();
+private String cadena=("Mensajee");
+private Object objetomensaje=new Date();
+}
+class lamina_ejemplo extends JPanel {
+	public void paintComponent(Graphics g) {
+		super.paintComponents(g);
+		Graphics2D g2=(Graphics2D)g;
+		Rectangle2D rectangulo=new Rectangle2D.Double(0,0,getWidth(),getHeight());
+		g2.setPaint(Color.YELLOW);
+		g2.fill(rectangulo);
+	}
+	public lamina_ejemplo(){
+		
+	}
+}
