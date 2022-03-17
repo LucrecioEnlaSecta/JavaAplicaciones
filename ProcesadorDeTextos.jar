@@ -1,0 +1,143 @@
+import javax.swing.*;
+import javax.swing.text.*;
+import java.awt.event.*;
+import java.awt.*;
+
+
+public class ProcesadorDeTextosIII {
+
+	public static void main(String[] args) {
+		ProcesadorDeTexto miprocesador=new ProcesadorDeTexto();
+
+	}
+}
+class ProcesadorDeTexto extends JFrame{
+	public ProcesadorDeTexto(){
+		setBounds(500,300,550,400);
+		setVisible(true);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setTitle("ProcesadorDeTexto Artesana");
+		LaminaProcesador milamina=new LaminaProcesador();
+		add(milamina);
+		
+		
+	}
+}
+class LaminaProcesador extends JPanel{
+	
+	public LaminaProcesador(){
+		setLayout(new BorderLayout());
+		miarea=new JTextPane();
+		JPanel laminamenu=new JPanel();
+		JMenuBar mibarra=new JMenuBar();
+		//-------------------------------
+		 fuente=new JMenu("fuente");
+		 estilo=new JMenu("estilo");
+		 tamagno=new JMenu("tamagno");
+		configuraMenu("Arial","fuente","Arial",9,1);
+		configuraMenu("Courier","fuente","Courier",9,1);
+		configuraMenu("Verdana","fuente","Verdana",9,1);
+		
+		configuraMenu("Negrita","estilo","",1,1);
+		configuraMenu("Cursiva","estilo","",2,1);
+		//-----------------------------------------------------------
+		JRadioButtonMenuItem tam12=new JRadioButtonMenuItem("12");
+		JRadioButtonMenuItem tam14=new JRadioButtonMenuItem("14");
+		JRadioButtonMenuItem tam16=new JRadioButtonMenuItem("16");
+		JRadioButtonMenuItem tam18=new JRadioButtonMenuItem("18");
+		ButtonGroup botonesTam=new ButtonGroup();
+		botonesTam.add(tam12);
+		botonesTam.add(tam14);
+		botonesTam.add(tam16);
+		botonesTam.add(tam18);
+		tamagno.add(tam12);
+		tamagno.add(tam14);
+		tamagno.add(tam16);
+		tamagno.add(tam18);
+		tam12.addActionListener(new StyledEditorKit.FontSizeAction("",12));
+		tam14.addActionListener(new StyledEditorKit.FontSizeAction("",14));
+		tam16.addActionListener(new StyledEditorKit.FontSizeAction("",16));
+		tam18.addActionListener(new StyledEditorKit.FontSizeAction("",18));
+		miarea=new JTextPane();
+		add(miarea,BorderLayout.CENTER);
+		JPopupMenu emergente=new JPopupMenu();
+		JMenuItem Negrita=new JMenuItem("Negrita");
+		JMenuItem Cursiva=new JMenuItem("Cursiva");
+		emergente.add(Negrita);
+		emergente.add(Cursiva);
+		
+		miarea.setComponentPopupMenu(emergente);
+		Negrita.addActionListener(new StyledEditorKit.BoldAction());
+		Cursiva.addActionListener(new StyledEditorKit.ItalicAction());
+		mibarra.add(fuente);
+		mibarra.add(estilo);
+		mibarra.add(tamagno);
+
+		laminamenu.add(mibarra);
+		add(laminamenu,BorderLayout.NORTH);
+		/**********************************************/
+		
+		
+		
+		
+		barraherra=new JToolBar();
+		configura_barra("N").addActionListener(new StyledEditorKit.BoldAction());
+		configura_barra("C").addActionListener(new StyledEditorKit.ItalicAction());
+		configura_barra("S").addActionListener(new StyledEditorKit.UnderlineAction());
+		barraherra.addSeparator();
+		configura_barra("R").addActionListener(new StyledEditorKit.ForegroundAction("Cambio de color",Color.red));
+		configura_barra("A").addActionListener(new StyledEditorKit.ForegroundAction("Cambio de color",Color.blue));
+		configura_barra("AM").addActionListener(new StyledEditorKit.ForegroundAction("Cambio de color",Color.yellow));
+		barraherra.addSeparator();
+		configura_barra("aI").addActionListener(new StyledEditorKit.AlignmentAction("",0));
+		configura_barra("aC").addActionListener(new StyledEditorKit.AlignmentAction("",1));
+		configura_barra("aD").addActionListener(new StyledEditorKit.AlignmentAction("",2));
+		configura_barra("aJ").addActionListener(new StyledEditorKit.AlignmentAction("",3));
+		
+		barraherra.setOrientation(1);
+		add(barraherra,BorderLayout.WEST);
+		
+		
+	}
+	public JButton configura_barra(String ruta){
+		JButton boton=new JButton(ruta);
+		barraherra.add(boton);
+		return boton;
+	}
+	public void configuraMenu(String rotulo,String menu,String tipoLetra,int estilos,int tam) {
+		JMenuItem elem_menu=new JMenuItem(rotulo);
+		if(menu=="fuente") {
+			fuente.add(elem_menu);
+			if(tipoLetra=="Arial") {
+				elem_menu.addActionListener(new StyledEditorKit.FontFamilyAction("cambio de letra","Arial"));
+			}else if(tipoLetra=="Courier") {
+				elem_menu.addActionListener(new StyledEditorKit.FontFamilyAction("cambio de letra","Courier"));
+			}else if(tipoLetra=="Verdana") {
+				elem_menu.addActionListener(new StyledEditorKit.FontFamilyAction("cambio de letra","Verdana"));
+			}
+		}
+		else if(menu=="estilo") {
+			estilo.add(elem_menu);
+			if(estilos==Font.BOLD) {
+				elem_menu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,InputEvent.CTRL_DOWN_MASK));
+				elem_menu.addActionListener(new StyledEditorKit.BoldAction());
+			}else if(estilos==Font.ITALIC) {
+				elem_menu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K,InputEvent.CTRL_DOWN_MASK));
+				elem_menu.addActionListener(new StyledEditorKit.ItalicAction());
+			}
+		}
+		else if(menu=="tamagno") {
+			tamagno.add(elem_menu);
+			elem_menu.addActionListener(new StyledEditorKit.FontSizeAction("Cambio de tamagno",tam));
+		}
+		else {
+			System.out.println("error");
+		}
+		
+	}
+
+	JTextPane miarea;
+	JMenu fuente,estilo,tamagno;
+	Font letras;
+	JToolBar barraherra;
+}
